@@ -1,0 +1,101 @@
+* {
+    user-select: none;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: rgb(155, 153, 153);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    padding: 20px;
+}
+
+.greet {
+    width: 300px;
+    background-color: white;
+    border-radius: 10px;
+    font-weight: 1000;
+    font-size: 25px;
+    padding: 5px 10px;
+    text-align: center;
+}
+
+.ask {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+}
+.ask .question {
+    text-align: center;
+    font-weight: 1000;
+    font-size: 25px;
+}
+.ask .button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+.ask .button .cancle{
+    background-color: rgb(190, 4, 4);
+    padding: 10px 15px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+
+}
+.ask .button .yes-button{
+    background-color: rgb(2, 95, 2);
+    padding: 10px 15px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.text{
+    font-weight: bold;
+}
+
+.grade-page{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.grade-but{
+    border: 2px solid rgb(37, 37, 37);
+    padding: 10px 15px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.calco{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+.snake-text {
+    font-family: "Brush Script MT", "Lucida Handwriting", "Segoe Script", cursive;
+    font-weight: 900;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: rgb(20, 20, 20);
+}
+
+
