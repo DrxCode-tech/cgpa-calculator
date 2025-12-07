@@ -6,7 +6,7 @@ import "./All.css";
 export default function Greet(){
     const navigate = useNavigate();
     useEffect(()=>{
-        setTimeout(()=> navigate("/ask"),10000)
+        setTimeout(()=> navigate("/ask"),100000)
     },[])
     return (
         <motion.div 
@@ -18,7 +18,9 @@ export default function Greet(){
             type:"spring"
         }}
         className="greet">
-            As unto a light that shines in dark place, until the day dawn and the day star arise in your heart
+            <div className="greet-text">
+                As unto a light that shines in dark place, until the day dawn and the day star arise in your heart
+            </div>
         </motion.div>
     )
 }
