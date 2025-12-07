@@ -323,21 +323,22 @@ const styles = {
     },
     gradeContainer: {
         display: "flex",
-        gap: "10px",
+        gap: "50px",
         justifyContent: "center",
         marginBottom: "25px"
     },
     gradeButton: {
-        padding: "10px 20px",
-        border: "1px solid white",
-        background: "black",
-        color: "white",
+        width: "120px",
+        height: "120px",
+        border: "2px solid black",
+        background: "white",
+        color: "black",
         cursor: "pointer",
-        borderRadius: "10px"
+        borderRadius: "50%"
     },
     gradeButtonActive: {
-        background: "white",
-        color: "black"
+        background: "black",
+        color: "white"
     },
     row: {
         display: "flex",
