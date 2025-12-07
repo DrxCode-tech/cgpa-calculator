@@ -297,12 +297,15 @@ const styles = {
         fontSize: "0.9rem",
     },
     wrapper: {
+        userSelect: "none",
+        boxSizing: "border-box",
         padding: "20px",
-        width: "100%",
+        width: "100vw",
         margin: "0 auto",
-        color: "#fff",
-        backgroundColor: "#000",
-        minHeight: "100vh"
+        color: "#000",
+        backgroundColor: "white",
+        height: "100vh",
+        overflowY: "auto"
     },
     title: {
         textAlign: "center",

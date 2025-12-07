@@ -23,6 +23,8 @@
 }
 
 .ask {
+     width: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -41,17 +43,17 @@
     gap: 50px;
 }
 .ask .button .cancle{
-    background-color: rgb(190, 4, 4);
+    background-color: black;
     padding: 10px 15px;
     border-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
-
+    color: white;
 }
 .ask .button .yes-button{
-    background-color: rgb(2, 95, 2);
+    background-color: white;
     padding: 10px 15px;
     border-radius: 20px;
     display: flex;
