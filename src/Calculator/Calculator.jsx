@@ -451,12 +451,12 @@ const styles = {
         userSelect: "none",
         boxSizing: "border-box",
         padding: "20px",
-        width: "100vw",
+        width: "100%",
         margin: "0 auto",
         color: "#000",
         backgroundColor: "white",
         height: "100vh",
-        overflowY: "auto"
+        overflowY: "auto",
     },
     title: {
         textAlign: "center",
