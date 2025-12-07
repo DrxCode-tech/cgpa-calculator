@@ -5,6 +5,7 @@ import "./All.css";
 
 export default function Ask() {
     const navigate = useNavigate();
+    const [exit, setExit] = useState(false);
     const [targetRoute, setTargetRoute] = useState(null);
 
     // When exit animation finishes, navigate
@@ -17,8 +18,9 @@ export default function Ask() {
         }
     }, [exit, targetRoute, navigate]);
 
-    const handleExit = () => {
-        window.location.replace("about:blank");
+    const handleExit = (route) => {
+        setTargetRoute(route);
+        setExit(true);
     };
 
     return (
@@ -56,7 +58,7 @@ export default function Ask() {
                             whileTap={{ scale: 1.10 }}
                             whileHover={{ scale: 1.05 }}
                             className="cancle"
-                            onClick={handleExit}
+                            onClick={() => handleExit("/bye")}
                         >
                             No I don't
                         </motion.button>
@@ -72,7 +74,7 @@ export default function Ask() {
                             whileTap={{ scale: 1.10 }}
                             whileHover={{ scale: 1.05 }}
                             className="yes-button"
-                            onClick={() => navigate("/calco")}
+                            onClick={() => handleExit("/calco")}
                         >
                             Yes I do
                         </motion.button>
