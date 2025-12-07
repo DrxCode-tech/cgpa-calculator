@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AutoFollowPop from "./Pop";
+import Install from "./Install";
 import { Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -252,6 +253,7 @@ export default function Calco() {
             <IdlePopup show={popup} close={() => setPopup(false)} />
             <FollowPopup />
             <AutoFollowPop />
+            <Install />
 
             {
                 popState && <DeletedRow course={courses} index={indexToDelete} setPopState={setPopState} setIndexToDelete={setIndexToDelete} setCourses={setCourses} />
@@ -265,19 +267,19 @@ function FollowPopup() {
 
     useEffect(() => {
         const followPopupShown = localStorage.getItem("followPopupShown");
-        if (followPopupShown) {
+        if (followPopupShown === "true") {
             setOpen(true);
         }
     }, []);
 
     const handleOpen = () => {
         setOpen(true);
-        localStorage.setItem("followPopupShown", true);
+        localStorage.setItem("followPopupShown", "true");
     };
 
     const handleClose = () => {
         setOpen(false);
-        localStorage.setItem("followPopupShown", false);
+        localStorage.setItem("followPopupShown", "false");
     };
 
     // Replace later
@@ -462,8 +464,7 @@ const styles = {
         fontWeight: "600"
     },
     backButton: {
-        background: "transparent",
-        border: "1px solid white",
+        background: "black",
         padding: "8px 16px",
         color: "white",
         cursor: "pointer",
