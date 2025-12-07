@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AutoFollowPop from "./Pop";
+import { Trash2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 /* ============================================================================
    Grade System Selector (4.0 or 5.0 system)
@@ -26,14 +28,34 @@ function GradeButton({ active, setActive }) {
     );
 }
 
+function DeletedRow({course,index,setPopState,setIndexToDelete,setCourses}) {
+    const handleCancel = () => {
+        setPopState(false);
+        setIndexToDelete(null);
+    };
+
+    const handleDelete = () => {
+        const updated = course.filter((_, i) => i !== index);
+        setCourses(updated);
+        setPopState(false);
+        setIndexToDelete(null);
+    };
+
+    return (
+        <div style={styles.popupDeleteBox}>
+            <p style={styles.deleteText}>{`Are you sure you want to delete ${course[index].course} course?`}</p>
+            <div style={styles.deleteButtonPage}>
+                <button onClick={handleCancel} style={styles.cancelCourse}>Cancel</button>
+                <button onClick={handleDelete} style={styles.deleteCourse}><Trash2 size={16}/> Delete</button>
+            </div>
+        </div>
+    )
+}
+
 /* ============================================================================
    Main Dynamic CGPA Calculator
 ============================================================================ */
-function BodyCalco({ system }) {
-    const [courses, setCourses] = useState([
-        { course: "", grade: "", unit: "" }
-    ]);
-
+function BodyCalco({ system,handleDelete,courses,setCourses }) {
     const [cgpa, setCgpa] = useState(null);
 
     const gradeValues = { A: 5, B: 4, C: 3, D: 2, E: 1, F: 0 };
@@ -113,6 +135,12 @@ function BodyCalco({ system }) {
                             <option key={n} value={n}>{n}</option>
                         ))}
                     </select>
+                    <motion.button 
+                    onClick={() => handleDelete(index)}
+                    whileTap={{ scale: 1.2 }}
+                    style={styles.deleteButton}>
+                        <Trash2 size={25} />
+                    </motion.button>
                 </div>
             ))}
 
@@ -156,8 +184,13 @@ function IdlePopup({ show, close }) {
    MAIN PAGE
 ============================================================================ */
 export default function Calco() {
+    const [courses, setCourses] = useState([
+        { course: "", grade: "", unit: "" }
+    ]);
+    const [indexToDelete, setIndexToDelete] = useState(null);
     const [active, setActive] = useState("5");
     const [popup, setPopup] = useState(false);
+    const [popState, setPopState] = useState(false);
     const navigate = useNavigate();
 
     // 300 seconds inactivity popup
@@ -180,6 +213,11 @@ export default function Calco() {
         };
     }, []);
 
+    const handleDelete = (index) => {
+        setPopState(true);
+        setIndexToDelete(index);
+    };
+
     return (
         <div style={styles.wrapper}>
             <button style={styles.backButton} onClick={() => navigate(-1)}>
@@ -190,11 +228,15 @@ export default function Calco() {
 
             <GradeButton active={active} setActive={setActive} />
 
-            <BodyCalco system={active} />
+            <BodyCalco system={active} handleDelete={handleDelete} courses={courses} setCourses={setCourses} />
 
             <IdlePopup show={popup} close={() => setPopup(false)} />
             <FollowPopup />
             <AutoFollowPop />
+
+            {
+                popState && <DeletedRow course={courses} index={indexToDelete} setPopState={setPopState} setIndexToDelete={setIndexToDelete} setCourses={setCourses} />
+            }
         </div>
     );
 }
@@ -242,10 +284,62 @@ function FollowPopup() {
    Styles (Black + White + Rounded Corners)
 ============================================================================ */
 const styles = {
-    container: {
-        padding: 20,
+    popupDeleteBox: {
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translateY(-50%) translateX(-50%)",
+        background: "white",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 999,
+        borderRadius: "12px",
+        padding: "10px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
     },
-
+    deleteText: {
+        textAlign: "center",
+        fontWeight: "600",
+        color: "black",
+        padding: "10px",
+    },
+    deleteButtonPage: {
+        display: "flex",
+        justifyContent: "center",
+        marginTop: "10px",
+        gap: "40px"
+    },
+    cancelCourse: {
+        padding: "8px 16px",
+        color: "red",
+        border: "1px solid red",
+        borderRadius: "12px",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "8px"
+    },
+    container: {
+        padding: "20px",
+        textAlign: "center",
+        borderRadius: "12px",
+        color: "red",
+    },
+    deleteCourse: {
+        padding: "8px 16px",
+        background: "red",
+        color: "white",
+        border: "none",
+        borderRadius: "12px",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "8px"
+    },
     mainButton: {
         padding: "12px 22px",
         background: "blue",
@@ -271,6 +365,14 @@ const styles = {
         zIndex: 999,
     },
 
+    deleteButton: {
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        padding: "0",
+        marginLeft: "10px",
+        color: "red",
+    },
     modal: {
         background: "white",
         padding: "25px",
