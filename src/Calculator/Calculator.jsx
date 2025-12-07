@@ -36,33 +36,37 @@ function BodyCalco({ system }) {
 
     const [cgpa, setCgpa] = useState(null);
 
+    const gradeValues = { A: 5, B: 4, C: 3, D: 2, E: 1, F: 0 };
+
     const addCourse = () => {
-        setCourses([...courses, { course: "", grade: "", unit: "" }]);
+        const updated = [...courses, { course: "", grade: "", unit: "" }];
+        setCourses(updated);
+        autoCalculate(updated);
     };
 
     const updateCourse = (index, field, value) => {
         const updated = [...courses];
         updated[index][field] = value;
         setCourses(updated);
+        autoCalculate(updated);
     };
 
-    const calculateCGPA = () => {
+    const autoCalculate = (rows) => {
         let totalPoints = 0;
         let totalUnits = 0;
 
-        for (const row of courses) {
-            const grade = Number(row.grade);
+        rows.forEach((row) => {
+            const gradePoint = gradeValues[row.grade] ?? null;
             const unit = Number(row.unit);
 
-            if (!isNaN(grade) && !isNaN(unit)) {
-                totalPoints += grade * unit;
+            if (!isNaN(gradePoint) && !isNaN(unit)) {
+                totalPoints += gradePoint * unit;
                 totalUnits += unit;
             }
-        }
+        });
 
         if (totalUnits === 0) return setCgpa(0);
 
-        // CGPA BASED ON ACTIVE SYSTEM (4 or 5)
         const result = (totalPoints / totalUnits).toFixed(2);
         setCgpa(result);
     };
@@ -71,49 +75,53 @@ function BodyCalco({ system }) {
         <div>
             {courses.map((item, index) => (
                 <div key={index} style={styles.row}>
+                    {/* Course Code (max 6 characters) */}
                     <input
                         style={styles.input}
                         type="text"
                         placeholder="Course Code"
                         value={item.course}
-                        onChange={(e) => updateCourse(index, "course", e.target.value)}
+                        maxLength={6}
+                        onChange={(e) =>
+                            updateCourse(index, "course", e.target.value.toUpperCase())
+                        }
                     />
 
-                    {/* Dropdown for Grade */}
+                    {/* Grade Dropdown: A–F */}
                     <select
                         style={styles.select}
                         value={item.grade}
                         onChange={(e) => updateCourse(index, "grade", e.target.value)}
                     >
                         <option value="">Grade</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        {system === "5" && <option value="5">5</option>}
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
                     </select>
 
-                    <input
+                    {/* Unit Dropdown: 1–7 */}
+                    <select
                         style={styles.select}
-                        type="number"
-                        placeholder="Units"
-                        min="1"
-                        max="6"
                         value={item.unit}
                         onChange={(e) => updateCourse(index, "unit", e.target.value)}
-                    />
+                    >
+                        <option value="">Unit</option>
+                        {[1, 2, 3, 4, 5, 6, 7].map((n) => (
+                            <option key={n} value={n}>{n}</option>
+                        ))}
+                    </select>
                 </div>
             ))}
 
+            {/* Add Button Only */}
             <button style={styles.addButton} onClick={addCourse}>
                 + Add Course
             </button>
 
-            <button style={styles.calculateButton} onClick={calculateCGPA}>
-                Calculate CGPA
-            </button>
-
+            {/* Auto-calculated CGPA */}
             {cgpa !== null && (
                 <div style={styles.cgpaDisplay}>
                     CGPA on {system}-Point Scale: <strong>{cgpa}</strong>
@@ -122,6 +130,7 @@ function BodyCalco({ system }) {
         </div>
     );
 }
+
 
 /* ============================================================================
    POPUP (after 300 seconds inactivity)
@@ -200,13 +209,13 @@ function FollowPopup() {
     return (
         <div style={styles.container}>
             <button style={styles.mainButton} onClick={() => setOpen(true)}>
-                Follow Me
+                Mmuchacho
             </button>
 
             {open && (
                 <div style={styles.overlay}>
                     <div style={styles.modal}>
-                        <h2 style={styles.title1}>Follow {username} on X</h2>
+                        <h2 style={styles.title1}>Follow on X</h2>
 
                         <a
                             href={followLink}
@@ -245,6 +254,8 @@ const styles = {
         borderRadius: "12px",
         cursor: "pointer",
         fontSize: "1rem",
+        display: "block",
+        margin: "auto",
     },
 
     overlay: {
@@ -334,7 +345,8 @@ const styles = {
         background: "white",
         color: "black",
         cursor: "pointer",
-        borderRadius: "50%"
+        borderRadius: "50%",
+        fontWeight: "bold",
     },
     gradeButtonActive: {
         background: "black",
@@ -362,14 +374,16 @@ const styles = {
         borderRadius: "8px"
     },
     addButton: {
-        width: "100%",
+        display: "block",
+        width: "30%",
         padding: "10px",
         background: "#222",
         color: "white",
         border: "1px solid white",
         cursor: "pointer",
         marginBottom: "20px",
-        borderRadius: "10px"
+        borderRadius: "10px",
+        margin: "auto",
     },
     calculateButton: {
         width: "100%",

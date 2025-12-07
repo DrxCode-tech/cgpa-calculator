@@ -80,7 +80,7 @@ export default function Ask() {
                         </motion.button>
                     </div>
 
-                    <div className="text snake-text">GodCal</div>
+                    <div className="text snake-text">Mmuchacho</div>
 
 
                 </motion.div>
