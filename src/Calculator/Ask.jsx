@@ -5,7 +5,6 @@ import "./All.css";
 
 export default function Ask() {
     const navigate = useNavigate();
-    const [exit, setExit] = useState(false);
     const [targetRoute, setTargetRoute] = useState(null);
 
     // When exit animation finishes, navigate
@@ -20,7 +19,6 @@ export default function Ask() {
 
     const handleExit = () => {
         window.location.replace("about:blank");
-        setExit(true);
     };
 
     return (
