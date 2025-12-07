@@ -74,7 +74,7 @@ export default function Ask() {
                             whileTap={{ scale: 1.10 }}
                             whileHover={{ scale: 1.05 }}
                             className="yes-button"
-                            onClick={() => handleExit("/calco")}
+                            onClick={() => navigate("/calco")}
                         >
                             Yes I do
                         </motion.button>
