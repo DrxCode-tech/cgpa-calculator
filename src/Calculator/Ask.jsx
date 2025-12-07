@@ -18,8 +18,8 @@ export default function Ask() {
         }
     }, [exit, targetRoute, navigate]);
 
-    const handleExit = (route) => {
-        setTargetRoute(route);
+    const handleExit = () => {
+        window.location.replace("about:blank");
         setExit(true);
     };
 
@@ -58,7 +58,7 @@ export default function Ask() {
                             whileTap={{ scale: 1.10 }}
                             whileHover={{ scale: 1.05 }}
                             className="cancle"
-                            onClick={() => handleExit("/")}
+                            onClick={handleExit}
                         >
                             No I don't
                         </motion.button>
