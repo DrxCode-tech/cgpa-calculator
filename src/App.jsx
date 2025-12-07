@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Home from "./Calculator/Home";
 import Ask from "./Calculator/Ask";
 import Calco from "./Calculator/Calculator";
-import "./Calculator/Bye.jsx";
+import Bye from "./Calculator/Bye.jsx";
 
 export default function App(){
   return (
