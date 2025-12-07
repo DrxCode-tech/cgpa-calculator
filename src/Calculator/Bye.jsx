@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import "./All.css";
 
-export default function Greet(){
+export default function Bye(){
     const navigate = useNavigate();
     useEffect(()=>{
         setTimeout(()=> window.location.replace("about:blank"),3000)
