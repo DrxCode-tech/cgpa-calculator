@@ -37,6 +37,7 @@ function DeletedRow({course,index,setPopState,setIndexToDelete,setCourses}) {
     const handleDelete = () => {
         const updated = course.filter((_, i) => i !== index);
         setCourses(updated);
+        localStorage.setItem("courses", JSON.stringify(updated));
         setPopState(false);
         setIndexToDelete(null);
     };
@@ -62,6 +63,7 @@ function BodyCalco({ system,handleDelete,courses,setCourses }) {
 
     const addCourse = () => {
         const updated = [...courses, { course: "", grade: "", unit: "" }];
+        localStorage.setItem("courses", JSON.stringify(updated));
         setCourses(updated);
         autoCalculate(updated);
     };
@@ -69,6 +71,7 @@ function BodyCalco({ system,handleDelete,courses,setCourses }) {
     const updateCourse = (index, field, value) => {
         const updated = [...courses];
         updated[index][field] = value;
+        localStorage.setItem("courses", JSON.stringify(updated));
         setCourses(updated);
         autoCalculate(updated);
     };
@@ -187,6 +190,22 @@ export default function Calco() {
     const [courses, setCourses] = useState([
         { course: "", grade: "", unit: "" }
     ]);
+
+    useEffect(() => {
+        const fetchCor = async () => {
+            try {
+                const cors = await JSON.parse(localStorage.getItem("courses"));
+                if (cors) {
+                    setCourses(cors);
+                }
+            } catch (error) {
+                console.error("Failed to fetch courses from localStorage:", error);
+            }
+        };
+
+        fetchCor();
+    },[])
+    
     const [indexToDelete, setIndexToDelete] = useState(null);
     const [active, setActive] = useState("5");
     const [popup, setPopup] = useState(false);
@@ -244,13 +263,30 @@ export default function Calco() {
 function FollowPopup() {
     const [open, setOpen] = useState(false);
 
+    useEffect(() => {
+        const followPopupShown = localStorage.getItem("followPopupShown");
+        if (followPopupShown) {
+            setOpen(true);
+        }
+    }, []);
+
+    const handleOpen = () => {
+        setOpen(true);
+        localStorage.setItem("followPopupShown", true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        localStorage.setItem("followPopupShown", false);
+    };
+
     // Replace later
     const username = "Dx_AI";
     const followLink = "https://twitter.com/intent/follow?screen_name=Dx_AI";
 
     return (
         <div style={styles.container}>
-            <button style={styles.mainButton} onClick={() => setOpen(true)}>
+            <button style={styles.mainButton} onClick={handleOpen}>
                 Mmuchacho
             </button>
 
@@ -268,7 +304,7 @@ function FollowPopup() {
                             Follow
                         </a>
 
-                        <button style={styles.closeButton1} onClick={() => setOpen(false)}>
+                        <button style={styles.closeButton1} onClick={handleClose}>
                             Close
                         </button>
                     </div>
