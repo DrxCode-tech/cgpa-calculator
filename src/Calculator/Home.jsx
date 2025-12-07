@@ -6,7 +6,7 @@ import "./All.css";
 export default function Greet(){
     const navigate = useNavigate();
     useEffect(()=>{
-        setTimeout(()=> navigate("/ask"),100000)
+        setTimeout(()=> navigate("/ask"),5000)
     },[])
     return (
         <motion.div 
