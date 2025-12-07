@@ -298,7 +298,7 @@ const styles = {
     },
     wrapper: {
         padding: "20px",
-        maxWidth: "600px",
+        width: "100%",
         margin: "0 auto",
         color: "#fff",
         backgroundColor: "#000",
