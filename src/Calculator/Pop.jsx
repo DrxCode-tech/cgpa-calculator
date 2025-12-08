@@ -4,7 +4,7 @@ export default function AutoFollowPop() {
   const [showPop, setShowPop] = useState(false);
   const popRef = useRef(null);
 
-  const username = "YourUsername"; 
+  const username = "ClassicTec19368"; 
   const followLink = `https://twitter.com/intent/follow?screen_name=${username}`;
 
   // Show popup every 20 seconds

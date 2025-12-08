@@ -302,8 +302,7 @@ function FollowPopup() {
     };
 
     // Replace later
-    const username = "Dx_AI";
-    const followLink = "https://twitter.com/intent/follow?screen_name=Dx_AI";
+    const followLink = "https://twitter.com/intent/follow?screen_name=ClassicTec19368";
 
     return (
         <div style={styles.container}>
