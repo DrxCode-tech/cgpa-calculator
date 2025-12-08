@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AutoFollowPop from "./Pop";
 import Install from "./Install";
-import { Trash2 } from "lucide-react";
+import { Trash2,ArrowLeftIcon } from "lucide-react";
 import { motion } from "framer-motion";
 
 /* ============================================================================
@@ -14,7 +14,8 @@ function GradeButton({ active, setActive }) {
     return (
         <div style={styles.gradeContainer}>
             {gradeArr.map((but) => (
-                <button
+                <motion.button
+                    whileHover={{scale:1.09}}
                     key={but}
                     onClick={() => setActive(but)}
                     style={{
@@ -23,7 +24,7 @@ function GradeButton({ active, setActive }) {
                     }}
                 >
                     {but}-Point System
-                </button>
+                </motion.button>
             ))}
         </div>
     );
@@ -47,8 +48,12 @@ function DeletedRow({course,index,setPopState,setIndexToDelete,setCourses}) {
         <div style={styles.popupDeleteBox}>
             <p style={styles.deleteText}>{`Are you sure you want to delete ${course[index].course} course?`}</p>
             <div style={styles.deleteButtonPage}>
-                <button onClick={handleCancel} style={styles.cancelCourse}>Cancel</button>
-                <button onClick={handleDelete} style={styles.deleteCourse}><Trash2 size={16}/> Delete</button>
+                <motion.button 
+                whileHover={{scale:1.09}}
+                onClick={handleCancel} style={styles.cancelCourse}>Cancel</motion.button>
+                <motion.button 
+                whileHover={{scale:1.09}}
+                onClick={handleDelete} style={styles.deleteCourse}><Trash2 size={16}/> Delete</motion.button>
             </div>
         </div>
     )
@@ -102,7 +107,8 @@ function BodyCalco({ system,handleDelete,courses,setCourses }) {
             {courses.map((item, index) => (
                 <div key={index} style={styles.row}>
                     {/* Course Code (max 6 characters) */}
-                    <input
+                    <motion.input
+                        whileHover={{scale:1.025}}
                         style={styles.input}
                         type="text"
                         placeholder="Course Code"
@@ -114,7 +120,8 @@ function BodyCalco({ system,handleDelete,courses,setCourses }) {
                     />
 
                     {/* Grade Dropdown: A–F */}
-                    <select
+                    <motion.select
+                        whileHover={{scale:1.025}}
                         style={styles.select}
                         value={item.grade}
                         onChange={(e) => updateCourse(index, "grade", e.target.value)}
@@ -126,10 +133,11 @@ function BodyCalco({ system,handleDelete,courses,setCourses }) {
                         <option value="D">D</option>
                         <option value="E">E</option>
                         <option value="F">F</option>
-                    </select>
+                    </motion.select>
 
                     {/* Unit Dropdown: 1–7 */}
-                    <select
+                    <motion.select
+                        whileHover={{scale:1.025}}
                         style={styles.select}
                         value={item.unit}
                         onChange={(e) => updateCourse(index, "unit", e.target.value)}
@@ -138,7 +146,7 @@ function BodyCalco({ system,handleDelete,courses,setCourses }) {
                         {[1, 2, 3, 4, 5, 6, 7].map((n) => (
                             <option key={n} value={n}>{n}</option>
                         ))}
-                    </select>
+                    </motion.select>
                     <motion.button 
                     onClick={() => handleDelete(index)}
                     whileTap={{ scale: 1.2 }}
@@ -149,9 +157,11 @@ function BodyCalco({ system,handleDelete,courses,setCourses }) {
             ))}
 
             {/* Add Button Only */}
-            <button style={styles.addButton} onClick={addCourse}>
+            <motion.button 
+            whileHover={{scale:1.025}}
+            style={styles.addButton} onClick={addCourse}>
                 + Add Course
-            </button>
+            </motion.button>
 
             {/* Auto-calculated CGPA */}
             {cgpa !== null && (
@@ -176,9 +186,16 @@ function IdlePopup({ show, close }) {
                 <h3>You’ve been inactive</h3>
                 <p>Do you want to continue?</p>
 
-                <button style={styles.closeButton} onClick={close}>
+                <motion.button 
+                whileHover={{scale:1.08}}
+                whileTap={{
+                    duration:3,
+                    type:"spring",
+                    stiffnees:300
+                }}
+                style={styles.closeButton} onClick={close}>
                     Continue
-                </button>
+                </motion.button>
             </div>
         </div>
     );
@@ -240,9 +257,11 @@ export default function Calco() {
 
     return (
         <div style={styles.wrapper}>
-            <button style={styles.backButton} onClick={() => navigate(-1)}>
-                Back
-            </button>
+            <motion.button 
+            whileHover={{scale:1.09}}
+            style={styles.backButton} onClick={() => navigate(-1)}>
+               <ArrowLeftIcon size={24}/> Back
+            </motion.button>
 
             <h2 style={styles.title}>CGPA Calculator</h2>
 
@@ -288,9 +307,11 @@ function FollowPopup() {
 
     return (
         <div style={styles.container}>
-            <button style={styles.mainButton} onClick={handleOpen}>
+            <motion.button 
+            whileHover={{scale:1.025}}
+            style={styles.mainButton} onClick={handleOpen}>
                 Mmuchacho
-            </button>
+            </motion.button>
 
             {open && (
                 <div style={styles.overlay}>
@@ -306,9 +327,11 @@ function FollowPopup() {
                             Follow
                         </a>
 
-                        <button style={styles.closeButton1} onClick={handleClose}>
+                        <motion.button 
+                        whileHover={{scale:1.025}}
+                        style={styles.closeButton1} onClick={handleClose}>
                             Close
-                        </button>
+                        </motion.button>
                     </div>
                 </div>
             )}
@@ -335,7 +358,7 @@ const styles = {
         zIndex: 999,
         borderRadius: "12px",
         padding: "10px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        boxShadow: "0 10px -10px rgba(0, 0, 0, 0.1)",
     },
     deleteText: {
         textAlign: "center",
@@ -380,9 +403,9 @@ const styles = {
     },
     mainButton: {
         padding: "12px 22px",
-        background: "blue",
-        color: "white",
-        border: "none",
+        background: "white",
+        color: "black",
+        border: "2px solid black",
         borderRadius: "12px",
         cursor: "pointer",
         fontSize: "1rem",
@@ -464,12 +487,17 @@ const styles = {
         fontWeight: "600"
     },
     backButton: {
-        background: "black",
+        background: "white",
         padding: "8px 16px",
-        color: "white",
+        border:"2px solid black",
+        color: "black",
         cursor: "pointer",
         marginBottom: "20px",
-        borderRadius: "10px"
+        borderRadius: "10px",
+        display:"flex",
+        justifyContent:"space-between",
+        alignItems:"center",
+        gap:"10px"
     },
     gradeContainer: {
         display: "flex",
@@ -499,17 +527,17 @@ const styles = {
     input: {
         flex: 1,
         padding: "8px",
-        border: "1px solid white",
-        background: "#111",
-        color: "white",
+        border: "1px solid black",
+        background: "white",
+        color: "black",
         borderRadius: "8px"
     },
     select: {
         flex: 1,
         padding: "8px",
-        border: "1px solid white",
-        background: "#111",
-        color: "white",
+        border: "1px solid black",
+        background: "white",
+        color: "black",
         borderRadius: "8px"
     },
     addButton: {
