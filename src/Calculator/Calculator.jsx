@@ -65,40 +65,61 @@ function DeletedRow({ course, index, setPopState, setIndexToDelete, setCourses }
 function BodyCalco({ system, handleDelete, courses, setCourses }) {
     const [cgpa, setCgpa] = useState(null);
 
-    useEffect(()=>{
-        const setCgpaVal = ()=>{
-            const val = JSON.parse(localStorage.getItem("cgpa"));
-            if(val){
-                setCgpa(val)
-            }
+    // Correct GP Conversion Logic
+    const gradeValues = system === "5"
+        ? { A: 5, B: 4, C: 3, D: 2, E: 1, F: 0 }
+        : { A: 4, B: 3, C: 2, D: 1, F: 0 }; // Correct 4-point system
+
+    // Run on page load
+    useEffect(() => {
+        const stored = JSON.parse(localStorage.getItem("courses"));
+        if (stored) {
+            setCourses(stored);
+            autoCalculate(stored);
         }
 
-        setCgpaVal();
-    },[])
+        const storedCgpa = JSON.parse(localStorage.getItem("cgpa"));
+        if (storedCgpa) setCgpa(storedCgpa);
+    }, []);
 
-    const gradeValues = { A: 5, B: 4, C: 3, D: 2, E: 1, F: 0 };
-
+    // ------------------------------
+    // Add NEW course row
+    // ------------------------------
     const addCourse = () => {
         const updated = [...courses, { course: "", grade: "", unit: "" }];
-        localStorage.setItem("courses", JSON.stringify(updated));
         setCourses(updated);
+        localStorage.setItem("courses", JSON.stringify(updated));
         autoCalculate(updated);
     };
 
+    useEffect(()=>{
+        const updated = [...courses];
+        autoCalculate(updated)
+    },[system])
+
+    // ------------------------------
+    // Update a specific input field
+    // ------------------------------
     const updateCourse = (index, field, value) => {
         const updated = [...courses];
         updated[index][field] = value;
-        localStorage.setItem("courses", JSON.stringify(updated));
+
         setCourses(updated);
+        localStorage.setItem("courses", JSON.stringify(updated));
         autoCalculate(updated);
     };
 
+    // ------------------------------
+    // Auto CGPA Calculation
+    // ------------------------------
     const autoCalculate = (rows) => {
         let totalPoints = 0;
         let totalUnits = 0;
 
         rows.forEach((row) => {
-            const gradePoint = gradeValues[row.grade] ?? null;
+            if (!row.grade || !row.unit) return;
+
+            const gradePoint = gradeValues[row.grade];
             const unit = Number(row.unit);
 
             if (!isNaN(gradePoint) && !isNaN(unit)) {
@@ -107,18 +128,22 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
             }
         });
 
-        if (totalUnits === 0) return setCgpa(0);
+        if (totalUnits === 0) {
+            setCgpa(0);
+            localStorage.setItem("cgpa", "0");
+            return;
+        }
 
-        const result = (totalPoints / totalUnits).toFixed(2);
+        const result = Number(totalPoints / totalUnits).toFixed(2);
         setCgpa(result);
-        localStorage.setItem("cgpa",JSON.stringify(result));
+        localStorage.setItem("cgpa", JSON.stringify(result));
     };
 
     return (
         <div>
             {courses.map((item, index) => (
                 <div key={index} style={styles.row}>
-                    {/* Course Code (max 6 characters) */}
+                    {/* Course Code */}
                     <motion.input
                         whileHover={{ scale: 1.025 }}
                         style={styles.input}
@@ -131,7 +156,7 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
                         }
                     />
 
-                    {/* Grade Dropdown: A–F */}
+                    {/* Grade */}
                     <motion.select
                         whileHover={{ scale: 1.025 }}
                         style={styles.select}
@@ -143,11 +168,11 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
                         <option value="B">B</option>
                         <option value="C">C</option>
                         <option value="D">D</option>
-                        <option value="E">E</option>
+                        {system === "5" && <option value="E">E</option>}
                         <option value="F">F</option>
                     </motion.select>
 
-                    {/* Unit Dropdown: 1–7 */}
+                    {/* Unit */}
                     <motion.select
                         whileHover={{ scale: 1.025 }}
                         style={styles.select}
@@ -159,23 +184,27 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
                             <option key={n} value={n}>{n}</option>
                         ))}
                     </motion.select>
+
                     <motion.button
                         onClick={() => handleDelete(index)}
                         whileTap={{ scale: 1.2 }}
-                        style={styles.deleteButton}>
+                        style={styles.deleteButton}
+                    >
                         <Trash2 size={25} />
                     </motion.button>
                 </div>
             ))}
 
-            {/* Add Button Only */}
+            {/* Add Course Button */}
             <motion.button
                 whileHover={{ scale: 1.025 }}
-                style={styles.addButton} onClick={addCourse}>
+                style={styles.addButton}
+                onClick={addCourse}
+            >
                 + Add Course
             </motion.button>
 
-            {/* Auto-calculated CGPA */}
+            {/* CGPA Output */}
             {cgpa !== null && (
                 <div style={styles.cgpaDisplay}>
                     CGPA on {system}-Point Scale: <strong>{cgpa}</strong>
@@ -184,6 +213,7 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
         </div>
     );
 }
+
 
 
 /* ============================================================================
