@@ -472,13 +472,11 @@ const styles = {
     wrapper: {
         userSelect: "none",
         boxSizing: "border-box",
-        padding: "20px",
+        padding: "10px",
         width: "100%",
-        margin: "0 auto",
         color: "#000",
         backgroundColor: "white",
         height: "100vh",
-        overflowY: "auto",
     },
     title: {
         textAlign: "center",
