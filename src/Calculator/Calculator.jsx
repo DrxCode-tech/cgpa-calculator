@@ -486,10 +486,9 @@ const styles = {
         fontWeight: "600"
     },
     backButton: {
-        background: "white",
+        background: "black",
         padding: "8px 16px",
-        border:"2px solid black",
-        color: "black",
+        color: "white",
         cursor: "pointer",
         marginBottom: "20px",
         borderRadius: "10px",
