@@ -525,7 +525,7 @@ const styles = {
         marginBottom: "15px"
     },
     input: {
-        flex: "100%",
+        width: "100%",
         padding: "8px",
         border: "1px solid black",
         background: "white",
@@ -533,7 +533,7 @@ const styles = {
         borderRadius: "8px"
     },
     select: {
-        flex: "100%",
+        width: "100%",
         padding: "8px",
         border: "1px solid black",
         background: "white",
