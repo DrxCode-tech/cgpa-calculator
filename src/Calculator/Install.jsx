@@ -1,48 +1,52 @@
 import React, { useState, useEffect } from "react";
 
-export default function Install() {
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstall, setShowInstall] = useState(false);
+export default function InstallPWA() {
+  const [promptEvent, setPromptEvent] = useState(null);
+  const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
-    // Listen for the install prompt event
-    window.addEventListener("beforeinstallprompt", (e) => {
+    function handleBeforeInstallPrompt(e) {
       e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstall(true);
-    });
+      setPromptEvent(e);
+      setShowButton(true);
+    }
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
   }, []);
 
-  const handleInstall = async () => {
-    if (!deferredPrompt) return;
+  async function installApp() {
+    if (!promptEvent) return;
 
-    deferredPrompt.prompt(); // show browser install UI
+    setShowButton(false);
 
-    const result = await deferredPrompt.userChoice;
+    // Trigger the browser prompt
+    promptEvent.prompt();
 
-    // result.outcome is either "accepted" or "dismissed"
-    console.log("Install result:", result.outcome);
+    const { outcome } = await promptEvent.userChoice;
 
-    setDeferredPrompt(null);
-    setShowInstall(false);
-  };
+    console.log("INSTALL OUTCOME:", outcome);
+
+    // Reset prompt so it doesn't fire twice
+    setPromptEvent(null);
+  }
 
   return (
     <div>
-      {/* Your existing UI */}
-
-      {/* INSTALL BUTTON */}
-      {showInstall && (
+      {showButton && (
         <button
+          onClick={installApp}
           style={{
-            padding: "10px 20px",
             background: "black",
             color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer"
+            padding: "12px 22px",
+            borderRadius: "12px",
+            cursor: "pointer",
+            border: "1px solid white"
           }}
-          onClick={handleInstall}
         >
           Install App
         </button>
