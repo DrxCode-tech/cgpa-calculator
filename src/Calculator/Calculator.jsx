@@ -65,26 +65,26 @@ function DeletedRow({ course, index, setPopState, setIndexToDelete, setCourses }
 function BodyCalco({ system, handleDelete, courses, setCourses }) {
     const [cgpa, setCgpa] = useState(null);
 
-    // Correct GP Conversion Logic
     const gradeValues = system === "5"
         ? { A: 5, B: 4, C: 3, D: 2, E: 1, F: 0 }
-        : { A: 4, B: 3, C: 2, D: 1, F: 0 }; // Correct 4-point system
+        : { A: 4, B: 3, C: 2, D: 1, F: 0 };
 
-    // Run on page load
+    // Load stored courses + cgpa on first render
     useEffect(() => {
-        const stored = JSON.parse(localStorage.getItem("courses"));
-        if (stored) {
-            setCourses(stored);
-            autoCalculate(stored);
+        const storedCourses = JSON.parse(localStorage.getItem("courses"));
+        const storedCgpa = JSON.parse(localStorage.getItem("cgpa"));
+
+        if (storedCourses && storedCourses.length > 0) {
+            setCourses(storedCourses);
+            autoCalculate(storedCourses, false); // do NOT overwrite CGPA on mount
         }
 
-        const storedCgpa = JSON.parse(localStorage.getItem("cgpa"));
-        if (storedCgpa) setCgpa(storedCgpa);
+        if (storedCgpa !== null) {
+            setCgpa(storedCgpa);
+        }
     }, []);
 
-    // ------------------------------
-    // Add NEW course row
-    // ------------------------------
+    // Add new course
     const addCourse = () => {
         const updated = [...courses, { course: "", grade: "", unit: "" }];
         setCourses(updated);
@@ -92,14 +92,14 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
         autoCalculate(updated);
     };
 
-    useEffect(()=>{
-        const updated = [...courses];
-        autoCalculate(updated)
-    },[system])
+    // Recalculate if system changes (4/5 point)
+    useEffect(() => {
+        if (courses.length > 0) {
+            autoCalculate(courses);
+        }
+    }, [system]);
 
-    // ------------------------------
-    // Update a specific input field
-    // ------------------------------
+    // Update input field
     const updateCourse = (index, field, value) => {
         const updated = [...courses];
         updated[index][field] = value;
@@ -109,10 +109,8 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
         autoCalculate(updated);
     };
 
-    // ------------------------------
-    // Auto CGPA Calculation
-    // ------------------------------
-    const autoCalculate = (rows) => {
+    // Main CGPA logic
+    const autoCalculate = (rows, save = true) => {
         let totalPoints = 0;
         let totalUnits = 0;
 
@@ -128,40 +126,37 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
             }
         });
 
-        if (totalUnits === 0) {
-            setCgpa(0);
-            localStorage.setItem("cgpa", "0");
-            return;
-        }
+        if (totalUnits === 0) return; // IMPORTANT: do NOT reset CGPA on refresh
 
         const result = Number(totalPoints / totalUnits).toFixed(2);
         setCgpa(result);
-        localStorage.setItem("cgpa", JSON.stringify(result));
+
+        if (save) {
+            localStorage.setItem("cgpa", JSON.stringify(result));
+        }
     };
 
     return (
         <div>
             {courses.map((item, index) => (
                 <div key={index} style={styles.row}>
-                    {/* Course Code */}
                     <motion.input
-                        whileHover={{ scale: 1.025 }}
                         style={styles.input}
                         type="text"
                         placeholder="Course Code"
-                        value={item.course}
                         maxLength={6}
+                        value={item.course}
                         onChange={(e) =>
                             updateCourse(index, "course", e.target.value.toUpperCase())
                         }
                     />
 
-                    {/* Grade */}
                     <motion.select
-                        whileHover={{ scale: 1.025 }}
                         style={styles.select}
                         value={item.grade}
-                        onChange={(e) => updateCourse(index, "grade", e.target.value)}
+                        onChange={(e) =>
+                            updateCourse(index, "grade", e.target.value)
+                        }
                     >
                         <option value="">Grade</option>
                         <option value="A">A</option>
@@ -172,22 +167,21 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
                         <option value="F">F</option>
                     </motion.select>
 
-                    {/* Unit */}
                     <motion.select
-                        whileHover={{ scale: 1.025 }}
                         style={styles.select}
                         value={item.unit}
-                        onChange={(e) => updateCourse(index, "unit", e.target.value)}
+                        onChange={(e) =>
+                            updateCourse(index, "unit", e.target.value)
+                        }
                     >
                         <option value="">Unit</option>
-                        {[1, 2, 3, 4, 5, 6, 7].map((n) => (
-                            <option key={n} value={n}>{n}</option>
+                        {[1, 2, 3, 4, 5, 6, 7].map((u) => (
+                            <option key={u} value={u}>{u}</option>
                         ))}
                     </motion.select>
 
                     <motion.button
                         onClick={() => handleDelete(index)}
-                        whileTap={{ scale: 1.2 }}
                         style={styles.deleteButton}
                     >
                         <Trash2 size={25} />
@@ -195,16 +189,13 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
                 </div>
             ))}
 
-            {/* Add Course Button */}
             <motion.button
-                whileHover={{ scale: 1.025 }}
                 style={styles.addButton}
                 onClick={addCourse}
             >
                 + Add Course
             </motion.button>
 
-            {/* CGPA Output */}
             {cgpa !== null && (
                 <div style={styles.cgpaDisplay}>
                     CGPA on {system}-Point Scale: <strong>{cgpa}</strong>
@@ -213,6 +204,7 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
         </div>
     );
 }
+
 
 
 
