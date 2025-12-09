@@ -65,6 +65,17 @@ function DeletedRow({ course, index, setPopState, setIndexToDelete, setCourses }
 function BodyCalco({ system, handleDelete, courses, setCourses }) {
     const [cgpa, setCgpa] = useState(null);
 
+    useEffect(()=>{
+        const setCgpaVal = ()=>{
+            const val = JSON.parse(localStorage.getItem("cgpa"));
+            if(val){
+                setCgpa(val)
+            }
+        }
+
+        setCgpaVal();
+    },[])
+
     const gradeValues = { A: 5, B: 4, C: 3, D: 2, E: 1, F: 0 };
 
     const addCourse = () => {
@@ -100,6 +111,7 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
 
         const result = (totalPoints / totalUnits).toFixed(2);
         setCgpa(result);
+        localStorage.setItem("cgpa",JSON.stringify(result));
     };
 
     return (
