@@ -31,6 +31,7 @@ function GradeButton({ active, setActive }) {
 }
 
 function DeletedRow({ course, index, setPopState, setIndexToDelete, setCourses }) {
+
     const handleCancel = () => {
         setPopState(false);
         setIndexToDelete(null);
@@ -38,11 +39,19 @@ function DeletedRow({ course, index, setPopState, setIndexToDelete, setCourses }
 
     const handleDelete = () => {
         const updated = course.filter((_, i) => i !== index);
+
         setCourses(updated);
         localStorage.setItem("courses", JSON.stringify(updated));
+
+        // IMPORTANT: trigger CGPA recalculation
+        if (typeof window.autoRecalcCgpa === "function") {
+            window.autoRecalcCgpa(updated);
+        }
+
         setPopState(false);
         setIndexToDelete(null);
     };
+
 
     return (
         <div style={styles.popupDeleteBox}>
@@ -68,6 +77,11 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
     const gradeValues = system === "5"
         ? { A: 5, B: 4, C: 3, D: 2, E: 1, F: 0 }
         : { A: 4, B: 3, C: 2, D: 1, F: 0 };
+
+    useEffect(() => {
+        window.autoRecalcCgpa = autoCalculate;
+    }, [courses, system]);
+
 
     // Load stored courses + cgpa on first render
     useEffect(() => {
@@ -126,7 +140,16 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
             }
         });
 
-        if (totalUnits === 0) return; // IMPORTANT: do NOT reset CGPA on refresh
+        // FIX: If nothing to calculate, restore stored CGPA
+        if (totalUnits === 0) {
+            const storedCgpa = JSON.parse(localStorage.getItem("cgpa"));
+            if (storedCgpa !== null) {
+                setCgpa(storedCgpa);
+            } else {
+                setCgpa(null);  // no stored cgpa
+            }
+            return;
+        }
 
         const result = Number(totalPoints / totalUnits).toFixed(2);
         setCgpa(result);
@@ -135,6 +158,7 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
             localStorage.setItem("cgpa", JSON.stringify(result));
         }
     };
+
 
     return (
         <div>

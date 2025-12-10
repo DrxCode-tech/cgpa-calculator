@@ -4,39 +4,51 @@ export default function AutoFollowPop() {
   const [showPop, setShowPop] = useState(false);
   const popRef = useRef(null);
 
-  const username = "ClassicTec19368"; 
+  const username = "ClassicTec19368";
   const followLink = `https://twitter.com/intent/follow?screen_name=${username}`;
 
-  // Show popup every 20 seconds
+  /* ============================================================
+     LOAD POPUP STATE ON REFRESH
+     If popup was open before refresh => reopen it
+  ============================================================ */
+  useEffect(() => {
+    const wasOpen = localStorage.getItem("autoFollowPopOpen");
+    if (wasOpen === "true") {
+      setShowPop(true);
+    }
+  }, []);
+
+  /* ============================================================
+     SHOW POPUP EVERY 5 MINUTES (300000 ms)
+     And persist its visibility state
+  ============================================================ */
   useEffect(() => {
     const interval = setInterval(() => {
       setShowPop(true);
+      localStorage.setItem("autoFollowPopOpen", "true");
     }, 300000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Close pop if user clicks outside the box
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (popRef.current && !popRef.current.contains(e.target)) {
-        setShowPop(false);
-      }
-    }
-
-    if (showPop) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
-  }, [showPop]);
+  /* ============================================================
+     CLOSE WHEN CLICKING OUTSIDE ONLY
+     Clicking overlay closes it
+  ============================================================ */
+  const closePopup = () => {
+    setShowPop(false);
+    localStorage.setItem("autoFollowPopOpen", "false");
+  };
 
   return (
-    <div>
+    <>
       {showPop && (
-        <div style={styles.overlay}>
-          <div style={styles.popContainer} ref={popRef}>
+        <div style={styles.overlay} onClick={closePopup}>
+          <div
+            style={styles.popContainer}
+            ref={popRef}
+            onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside the box
+          >
             <a
               href={followLink}
               target="_blank"
@@ -48,7 +60,7 @@ export default function AutoFollowPop() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
@@ -65,7 +77,8 @@ const styles = {
     alignItems: "center",
     zIndex: 1000,
     padding: "25px",
-    backdropFilter:"blur(6px)",
+    backdropFilter: "blur(6px)",
+    cursor: "pointer", // background is clickable
   },
 
   popContainer: {
@@ -77,6 +90,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+    cursor: "default", // do not close when clicking the box
   },
 
   followButton: {
@@ -86,7 +100,7 @@ const styles = {
     color: "white",
     padding: "12px",
     borderRadius: "12px",
-    textAlign:"center",
+    textAlign: "center",
     textDecoration: "none",
     fontSize: "1.1rem",
     cursor: "pointer",
