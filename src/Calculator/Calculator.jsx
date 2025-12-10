@@ -620,7 +620,7 @@ const styles = {
     },
     Text: {
         display: "block",
-        width: "30%",
+        width: "80%",
         cursor: "pointer",
         marginBottom: "20px",
         margin: "auto",
