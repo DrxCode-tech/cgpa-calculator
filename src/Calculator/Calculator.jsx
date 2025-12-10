@@ -625,6 +625,7 @@ const styles = {
         marginBottom: "20px",
         margin: "auto",
         textAlign:"center",
+        padding:"20px",
     },
     calculateButton: {
         width: "100%",
