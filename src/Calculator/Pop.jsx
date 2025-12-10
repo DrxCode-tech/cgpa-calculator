@@ -1,59 +1,60 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 export default function AutoFollowPop() {
-  const [showPop, setShowPop] = useState(false);
-  const popRef = useRef(null);
-
   const username = "ClassicTec19368";
   const followLink = `https://twitter.com/intent/follow?screen_name=${username}`;
 
+  const [showPop, setShowPop] = useState(false);
+
   /* ============================================================
-     LOAD POPUP STATE ON REFRESH
-     If popup was open before refresh => reopen it
+     LOAD POPUP STATE ON PAGE LOAD
+     If user has NOT clicked follow before => show popup
   ============================================================ */
   useEffect(() => {
-    const wasOpen = localStorage.getItem("autoFollowPopOpen");
-    if (wasOpen === "true") {
+    const hasFollowed = localStorage.getItem("hasFollowedX");
+
+    // If not followed before → show popup
+    if (hasFollowed !== "true") {
       setShowPop(true);
     }
   }, []);
 
   /* ============================================================
-     SHOW POPUP EVERY 5 MINUTES (300000 ms)
-     And persist its visibility state
+     SHOW POPUP EVERY 5 MINUTES IF NOT FOLLOWED YET
   ============================================================ */
   useEffect(() => {
     const interval = setInterval(() => {
-      setShowPop(true);
-      localStorage.setItem("autoFollowPopOpen", "true");
-    }, 300000);
+      const hasFollowed = localStorage.getItem("hasFollowedX");
+
+      if (hasFollowed !== "true") {
+        setShowPop(true);
+      }
+    }, 150000);
 
     return () => clearInterval(interval);
   }, []);
 
   /* ============================================================
-     CLOSE WHEN CLICKING OUTSIDE ONLY
-     Clicking overlay closes it
+     USER CLICKED FOLLOW BUTTON
+     => Mark as followed
+     => Hide popup permanently
   ============================================================ */
-  const closePopup = () => {
+  const handleFollowClick = () => {
+    localStorage.setItem("hasFollowedX", "true");
     setShowPop(false);
-    localStorage.setItem("autoFollowPopOpen", "false");
   };
 
   return (
     <>
       {showPop && (
-        <div style={styles.overlay} onClick={closePopup}>
-          <div
-            style={styles.popContainer}
-            ref={popRef}
-            onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside the box
-          >
+        <div style={styles.overlay}>
+          <div style={styles.popContainer}>
             <a
               href={followLink}
               target="_blank"
               rel="noopener noreferrer"
               style={styles.followButton}
+              onClick={handleFollowClick} // CLOSE ONLY WHEN FOLLOW IS CLICKED
             >
               Follow on X
             </a>
@@ -78,7 +79,6 @@ const styles = {
     zIndex: 1000,
     padding: "25px",
     backdropFilter: "blur(6px)",
-    cursor: "pointer", // background is clickable
   },
 
   popContainer: {
@@ -90,7 +90,6 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
-    cursor: "default", // do not close when clicking the box
   },
 
   followButton: {

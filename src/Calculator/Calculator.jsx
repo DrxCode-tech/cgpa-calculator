@@ -74,23 +74,20 @@ function DeletedRow({ course, index, setPopState, setIndexToDelete, setCourses }
 function BodyCalco({ system, handleDelete, courses, setCourses }) {
     const [cgpa, setCgpa] = useState(null);
 
-    const gradeValues = system === "5"
-        ? { A: 5, B: 4, C: 3, D: 2, E: 1, F: 0 }
-        : { A: 4, B: 3, C: 2, D: 1, F: 0 };
+    // Correct grading scales
+    const gradeValues =
+        system === "5"
+            ? { A: 5, B: 4, C: 3, D: 2, E: 1, F: 0 } // University
+            : { A: 4, B: 3, C: 2, D: 1, F: 0 };     // Polytechnic
 
-    useEffect(() => {
-        window.autoRecalcCgpa = autoCalculate;
-    }, [courses, system]);
-
-
-    // Load stored courses + cgpa on first render
+    // Load on first mount
     useEffect(() => {
         const storedCourses = JSON.parse(localStorage.getItem("courses"));
         const storedCgpa = JSON.parse(localStorage.getItem("cgpa"));
 
-        if (storedCourses && storedCourses.length > 0) {
+        if (storedCourses && Array.isArray(storedCourses)) {
             setCourses(storedCourses);
-            autoCalculate(storedCourses, false); // do NOT overwrite CGPA on mount
+            autoCalculate(storedCourses, false);
         }
 
         if (storedCgpa !== null) {
@@ -98,7 +95,12 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
         }
     }, []);
 
-    // Add new course
+    // Recalculate whenever system changes
+    useEffect(() => {
+        if (courses.length > 0) autoCalculate(courses);
+    }, [system]);
+
+    // Add new course row
     const addCourse = () => {
         const updated = [...courses, { course: "", grade: "", unit: "" }];
         setCourses(updated);
@@ -106,14 +108,7 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
         autoCalculate(updated);
     };
 
-    // Recalculate if system changes (4/5 point)
-    useEffect(() => {
-        if (courses.length > 0) {
-            autoCalculate(courses);
-        }
-    }, [system]);
-
-    // Update input field
+    // Update a field in a row
     const updateCourse = (index, field, value) => {
         const updated = [...courses];
         updated[index][field] = value;
@@ -123,7 +118,7 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
         autoCalculate(updated);
     };
 
-    // Main CGPA logic
+    // CGPA Calculation
     const autoCalculate = (rows, save = true) => {
         let totalPoints = 0;
         let totalUnits = 0;
@@ -131,34 +126,28 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
         rows.forEach((row) => {
             if (!row.grade || !row.unit) return;
 
-            const gradePoint = gradeValues[row.grade];
+            const gp = gradeValues[row.grade];
             const unit = Number(row.unit);
 
-            if (!isNaN(gradePoint) && !isNaN(unit)) {
-                totalPoints += gradePoint * unit;
+            if (!isNaN(gp) && !isNaN(unit)) {
+                totalPoints += gp * unit;
                 totalUnits += unit;
             }
         });
 
-        // FIX: If nothing to calculate, restore stored CGPA
         if (totalUnits === 0) {
-            const storedCgpa = JSON.parse(localStorage.getItem("cgpa"));
-            if (storedCgpa !== null) {
-                setCgpa(storedCgpa);
-            } else {
-                setCgpa(null);  // no stored cgpa
-            }
+            const stored = JSON.parse(localStorage.getItem("cgpa"));
+            setCgpa(stored ?? null);
             return;
         }
 
-        const result = Number(totalPoints / totalUnits).toFixed(2);
+        const result = (totalPoints / totalUnits).toFixed(2);
         setCgpa(result);
 
         if (save) {
             localStorage.setItem("cgpa", JSON.stringify(result));
         }
     };
-
 
     return (
         <div>
@@ -218,12 +207,14 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
                 animate={{ y: 0, opacity: 1 }}
                 style={styles.Text}
             >
-                You can add from your year 1 to year 5 !
+                You can add from year 1 to year 5
             </motion.div>
 
+            {/* ADD BUTTON FIXED */}
             <motion.button
                 style={styles.addButton}
                 onClick={addCourse}
+                whileTap={{ scale: 0.9 }}
             >
                 + Add Course
             </motion.button>
@@ -336,13 +327,12 @@ export default function Calco() {
             <BodyCalco system={active} handleDelete={handleDelete} courses={courses} setCourses={setCourses} />
 
             <IdlePopup show={popup} close={() => setPopup(false)} />
-            <FollowPopup />
-            <AutoFollowPop />
-            <Install />
-
             {
                 popState && <DeletedRow course={courses} index={indexToDelete} setPopState={setPopState} setIndexToDelete={setIndexToDelete} setCourses={setCourses} />
             }
+            <FollowPopup />
+            <AutoFollowPop />
+            <Install />
         </div>
     );
 }
@@ -420,7 +410,7 @@ const styles = {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        zIndex: 999,
+        zIndex: 5,
         borderRadius: "12px",
         padding: "10px",
         boxShadow: "0 10px -10px rgba(0, 0, 0, 0.1)",
@@ -439,8 +429,8 @@ const styles = {
     },
     cancelCourse: {
         padding: "8px 16px",
-        color: "red",
-        border: "1px solid red",
+        color: "black",
+        border: "1px solid black",
         borderRadius: "12px",
         cursor: "pointer",
         display: "flex",
@@ -456,7 +446,7 @@ const styles = {
     },
     deleteCourse: {
         padding: "8px 16px",
-        background: "red",
+        background: "black",
         color: "white",
         border: "none",
         borderRadius: "12px",
@@ -491,7 +481,7 @@ const styles = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        zIndex: 999,
+        zIndex: 9,
     },
 
     deleteButton: {
@@ -509,6 +499,7 @@ const styles = {
         maxWidth: "350px",
         borderRadius: "20px",
         textAlign: "center",
+        zIndex: 10,
     },
 
     title1: {
@@ -614,7 +605,7 @@ const styles = {
         border: "1px solid white",
         cursor: "pointer",
         marginBottom: "20px",
-        marginTop:"20px",
+        marginTop: "20px",
         borderRadius: "10px",
         margin: "auto",
     },
@@ -624,8 +615,8 @@ const styles = {
         cursor: "pointer",
         marginBottom: "20px",
         margin: "auto",
-        textAlign:"center",
-        padding:"20px",
+        textAlign: "center",
+        padding: "20px",
     },
     calculateButton: {
         width: "100%",
