@@ -615,6 +615,7 @@ const styles = {
         border: "1px solid white",
         cursor: "pointer",
         marginBottom: "20px",
+        marginTop:"20px",
         borderRadius: "10px",
         margin: "auto",
     },
