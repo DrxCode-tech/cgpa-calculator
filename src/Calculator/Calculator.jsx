@@ -213,6 +213,14 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
                 </div>
             ))}
 
+            <motion.div
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                style={styles.Text}
+            >
+                You can add from your year 1 to year 5 !
+            </motion.div>
+
             <motion.button
                 style={styles.addButton}
                 onClick={addCourse}
@@ -493,7 +501,7 @@ const styles = {
         cursor: "pointer",
         padding: "0",
         marginLeft: "10px",
-        color: "red",
+        color: "black",
     },
     modal: {
         background: "white",
@@ -609,6 +617,14 @@ const styles = {
         marginBottom: "20px",
         borderRadius: "10px",
         margin: "auto",
+    },
+    Text: {
+        display: "block",
+        width: "30%",
+        cursor: "pointer",
+        marginBottom: "20px",
+        margin: "auto",
+        textAlign:"center",
     },
     calculateButton: {
         width: "100%",
