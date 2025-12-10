@@ -475,7 +475,6 @@ const styles = {
         fontSize: "1rem",
         display: "block",
         margin: "auto",
-        fontFamily: '"Brush Script MT", "Lucida Handwriting", "Segoe Script", cursive',
         fontWeight: 900,
         letterSpacing: "2px",
         color: "rgb(20, 20, 20)",     // fixed
