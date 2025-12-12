@@ -207,7 +207,7 @@ function BodyCalco({ system, handleDelete, courses, setCourses }) {
                 animate={{ y: 0, opacity: 1 }}
                 style={styles.Text}
             >
-                You can add from year 1 to year 5
+                Input all results earned from year1 till date including all F's and carryovers for correct calculation
             </motion.div>
 
             {/* ADD BUTTON FIXED */}

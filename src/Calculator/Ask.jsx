@@ -43,7 +43,7 @@ export default function Ask() {
                         }}
                         className="question"
                     >
-                        Do You believe in God ?
+                        Do You believe in Jesus Christ ?
                     </motion.div>
 
                     <div className="button">
