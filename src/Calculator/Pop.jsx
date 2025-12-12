@@ -29,7 +29,7 @@ export default function AutoFollowPop() {
       if (hasFollowed !== "true") {
         setShowPop(true);
       }
-    }, 150000);
+    }, 200000);
 
     return () => clearInterval(interval);
   }, []);
