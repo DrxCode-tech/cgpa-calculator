@@ -480,7 +480,7 @@ const styles = {
         border:"2px solid gray",
         margin:"auto auto",
         width:"auto",
-        fontWeight:"1000"
+        fontWeight:"1000",
         background:"#7c7c7c80"
     },
 
