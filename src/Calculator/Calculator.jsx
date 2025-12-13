@@ -481,7 +481,7 @@ const styles = {
         margin:"auto auto",
         width:"auto",
         fontWeight:"1000",
-        background:"#7c7c7c80"
+        background:"#b9b9b980"
     },
 
     closeButton1: {
