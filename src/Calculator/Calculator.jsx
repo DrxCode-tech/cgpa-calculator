@@ -470,16 +470,18 @@ const styles = {
 
     followButton: {
         display: "block",
-        padding: "4px 2px",
+        padding: "8px 2px",
         background: "white",
         color: "black",
         borderRadius: "12px",
         fontSize: "1.1rem",
         textDecoration: "none",
         marginBottom: "15px",
-        border:"2px solid black",
+        border:"2px solid gray",
         margin:"auto auto",
         width:"auto",
+        fontWeight:"1000"
+        background:"#7c7c7c80"
     },
 
     closeButton1: {
