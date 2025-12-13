@@ -470,7 +470,7 @@ const styles = {
 
     followButton: {
         display: "block",
-        padding: "12px",
+        padding: "2px 4px",
         background: "white",
         color: "black",
         borderRadius: "12px",
@@ -478,8 +478,8 @@ const styles = {
         textDecoration: "none",
         marginBottom: "15px",
         border:"2px solid black",
-        width:"30%",
         margin:"auto auto",
+        width:"auto",
     },
 
     closeButton1: {
