@@ -7,28 +7,11 @@ export default function AutoFollowPop() {
   const [showPop, setShowPop] = useState(false);
 
   /* ============================================================
-     LOAD POPUP STATE ON PAGE LOAD
-     If user has NOT clicked follow before => show popup
-  ============================================================ */
-  useEffect(() => {
-    const hasFollowed = localStorage.getItem("hasFollowedX");
-
-    // If not followed before → show popup
-    if (hasFollowed !== "true") {
-      setShowPop(true);
-    }
-  }, []);
-
-  /* ============================================================
      SHOW POPUP EVERY 5 MINUTES IF NOT FOLLOWED YET
   ============================================================ */
   useEffect(() => {
     const interval = setInterval(() => {
-      const hasFollowed = localStorage.getItem("hasFollowedX");
-
-      if (hasFollowed !== "true") {
-        setShowPop(true);
-      }
+      setShowPop(true);
     }, 200000);
 
     return () => clearInterval(interval);
@@ -40,7 +23,6 @@ export default function AutoFollowPop() {
      => Hide popup permanently
   ============================================================ */
   const handleFollowClick = () => {
-    localStorage.setItem("hasFollowedX", "true");
     setShowPop(false);
   };
 
