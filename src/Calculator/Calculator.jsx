@@ -314,11 +314,19 @@ export default function Calco() {
 
     return (
         <div style={styles.wrapper}>
-            <motion.button
-                whileHover={{ scale: 1.09 }}
-                style={styles.backButton} onClick={() => navigate(-1)}>
-                <ArrowLeftIcon size={24} /> Back
-            </motion.button>
+            <div style={styles.brand}>
+                <motion.button
+                    whileHover={{ scale: 1.09 }}
+                    style={styles.backButton} onClick={() => navigate(-1)}>
+                    <ArrowLeftIcon size={24} /> Back
+                </motion.button>
+
+                <motion.button
+                    whileHover={{ scale: 1.025 }}
+                    style={styles.mainButton}>
+                    Mmuchacho
+                </motion.button>
+            </div>
 
             <h2 style={styles.title}>CGPA Calculator</h2>
 
@@ -338,58 +346,19 @@ export default function Calco() {
 }
 
 function FollowPopup() {
-    const [open, setOpen] = useState(false);
-
-    useEffect(() => {
-        const followPopupShown = localStorage.getItem("followPopupShown");
-        if (followPopupShown === "true") {
-            setOpen(true);
-        }
-    }, []);
-
-    const handleOpen = () => {
-        setOpen(true);
-        localStorage.setItem("followPopupShown", "true");
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        localStorage.setItem("followPopupShown", "false");
-    };
-
-    // Replace later
     const followLink = "https://twitter.com/intent/follow?screen_name=ClassicTec19368";
 
     return (
         <div style={styles.container}>
-            <motion.button
+            <motion.a
                 whileHover={{ scale: 1.025 }}
-                style={styles.mainButton} onClick={handleOpen}>
-                Mmuchacho
-            </motion.button>
-
-            {open && (
-                <div style={styles.overlay}>
-                    <div style={styles.modal}>
-                        <h2 style={styles.title1}>Follow on X</h2>
-
-                        <a
-                            href={followLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={styles.followButton}
-                        >
-                            Follow
-                        </a>
-
-                        <motion.button
-                            whileHover={{ scale: 1.025 }}
-                            style={styles.closeButton1} onClick={handleClose}>
-                            Close
-                        </motion.button>
-                    </div>
-                </div>
-            )}
+                href={followLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.followButton}
+            >
+                Level up your CGPA, Follow on X
+            </motion.a>
         </div>
     );
 }
@@ -400,6 +369,13 @@ function FollowPopup() {
    Styles (Black + White + Rounded Corners)
 ============================================================================ */
 const styles = {
+    brand: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding:"4px",
+        width:"100%",
+    },
     popupDeleteBox: {
         position: "fixed",
         top: "50%",
@@ -458,30 +434,13 @@ const styles = {
     },
     mainButton: {
         padding: "12px 22px",
-        background: "white",
-        border: "2px solid black",
-        borderRadius: "12px",
-        cursor: "pointer",
         fontSize: "1rem",
         display: "block",
-        margin: "auto",
+        borderRadius:"15px",
+        border:"none",
         fontWeight: 900,
         letterSpacing: "2px",
         color: "rgb(20, 20, 20)",     // fixed
-    },
-
-
-    overlay: {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        background: "rgba(0,0,0,0.6)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 9,
     },
 
     deleteButton: {
@@ -512,12 +471,15 @@ const styles = {
     followButton: {
         display: "block",
         padding: "12px",
-        background: "#1DA1F2",
-        color: "white",
+        background: "white",
+        color: "black",
         borderRadius: "12px",
         fontSize: "1.1rem",
         textDecoration: "none",
         marginBottom: "15px",
+        border:"2px solid black",
+        width:"30%",
+        margin:"auto auto",
     },
 
     closeButton1: {
@@ -548,7 +510,6 @@ const styles = {
         padding: "8px 16px",
         color: "white",
         cursor: "pointer",
-        marginBottom: "20px",
         borderRadius: "10px",
         display: "flex",
         justifyContent: "space-between",
